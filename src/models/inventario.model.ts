@@ -1,4 +1,4 @@
-import {Entity, model, property, hasOne} from '@loopback/repository';
+import {Entity, model, property, hasOne, belongsTo} from '@loopback/repository';
 import {Sucursal} from './sucursal.model';
 
 @model()
@@ -18,6 +18,9 @@ export class Inventario extends Entity {
 
   @hasOne(() => Sucursal)
   inventarioSucursal: Sucursal;
+
+  @belongsTo(() => Sucursal, {name: 'inventarioSucursal'})
+  sucursalId: string;
 
   constructor(data?: Partial<Inventario>) {
     super(data);
