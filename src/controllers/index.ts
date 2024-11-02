@@ -17,3 +17,5 @@ export * from './inventario-catalogo.controller';
 export * from './catalogo-inventario.controller';
 export * from './inventario-catalogo-sub-venta.controller';
 export * from './sub-venta-inventario-catalogo.controller';
+export * from './inventario-catalogo-pedido.controller';
+export * from './pedido-inventario-catalogo.controller';

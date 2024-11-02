@@ -15,6 +15,15 @@ export class ProductoPedido extends Entity {
   })
   cantidad: number;
 
+  @property({
+    type: 'string',
+  })
+  inventarioCatalogoId?: string;
+
+  @property({
+    type: 'string',
+  })
+  pedidoId?: string;
 
   constructor(data?: Partial<ProductoPedido>) {
     super(data);
