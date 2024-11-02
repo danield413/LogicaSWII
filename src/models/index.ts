@@ -9,3 +9,5 @@ export * from './catalogo.model';
 export * from './producto.model';
 export * from './pedido.model';
 export * from './proveedor.model';
+export * from './inventario-catalogo.model';
+export * from './producto-pedido.model';
