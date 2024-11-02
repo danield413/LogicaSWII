@@ -2,109 +2,149 @@ import {
   Count,
   CountSchema,
   Filter,
+  FilterExcludingWhere,
   repository,
   Where,
 } from '@loopback/repository';
-  import {
-  del,
+import {
+  post,
+  param,
   get,
   getModelSchemaRef,
-  getWhereSchemaFor,
-  param,
   patch,
-  post,
+  put,
+  del,
   requestBody,
+  response,
 } from '@loopback/rest';
-import {
-Inventario,
-InventarioCatalogo,
-Catalogo,
-} from '../models';
-import {InventarioRepository} from '../repositories';
+import {InventarioCatalogo} from '../models';
+import {InventarioCatalogoRepository} from '../repositories';
 
 export class InventarioCatalogoController {
   constructor(
-    @repository(InventarioRepository) protected inventarioRepository: InventarioRepository,
-  ) { }
+    @repository(InventarioCatalogoRepository)
+    public inventarioCatalogoRepository : InventarioCatalogoRepository,
+  ) {}
 
-  @get('/inventarios/{id}/catalogos', {
-    responses: {
-      '200': {
-        description: 'Array of Inventario has many Catalogo through InventarioCatalogo',
-        content: {
-          'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(Catalogo)},
-          },
+  @post('/inventario-catalogos')
+  @response(200, {
+    description: 'InventarioCatalogo model instance',
+    content: {'application/json': {schema: getModelSchemaRef(InventarioCatalogo)}},
+  })
+  async create(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(InventarioCatalogo, {
+            title: 'NewInventarioCatalogo',
+            exclude: ['_id'],
+          }),
+        },
+      },
+    })
+    inventarioCatalogo: Omit<InventarioCatalogo, '_id'>,
+  ): Promise<InventarioCatalogo> {
+    return this.inventarioCatalogoRepository.create(inventarioCatalogo);
+  }
+
+  @get('/inventario-catalogos/count')
+  @response(200, {
+    description: 'InventarioCatalogo model count',
+    content: {'application/json': {schema: CountSchema}},
+  })
+  async count(
+    @param.where(InventarioCatalogo) where?: Where<InventarioCatalogo>,
+  ): Promise<Count> {
+    return this.inventarioCatalogoRepository.count(where);
+  }
+
+  @get('/inventario-catalogos')
+  @response(200, {
+    description: 'Array of InventarioCatalogo model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(InventarioCatalogo, {includeRelations: true}),
         },
       },
     },
   })
   async find(
-    @param.path.string('id') id: string,
-    @param.query.object('filter') filter?: Filter<Catalogo>,
-  ): Promise<Catalogo[]> {
-    return this.inventarioRepository.inventarioCatalogo1(id).find(filter);
+    @param.filter(InventarioCatalogo) filter?: Filter<InventarioCatalogo>,
+  ): Promise<InventarioCatalogo[]> {
+    return this.inventarioCatalogoRepository.find(filter);
   }
 
-  @post('/inventarios/{id}/catalogos', {
-    responses: {
-      '200': {
-        description: 'create a Catalogo model instance',
-        content: {'application/json': {schema: getModelSchemaRef(Catalogo)}},
-      },
-    },
+  @patch('/inventario-catalogos')
+  @response(200, {
+    description: 'InventarioCatalogo PATCH success count',
+    content: {'application/json': {schema: CountSchema}},
   })
-  async create(
-    @param.path.string('id') id: typeof Inventario.prototype._id,
+  async updateAll(
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Catalogo, {
-            title: 'NewCatalogoInInventario',
-            exclude: ['_id'],
-          }),
-        },
-      },
-    }) catalogo: Omit<Catalogo, '_id'>,
-  ): Promise<Catalogo> {
-    return this.inventarioRepository.inventarioCatalogo1(id).create(catalogo);
-  }
-
-  @patch('/inventarios/{id}/catalogos', {
-    responses: {
-      '200': {
-        description: 'Inventario.Catalogo PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
-      },
-    },
-  })
-  async patch(
-    @param.path.string('id') id: string,
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Catalogo, {partial: true}),
+          schema: getModelSchemaRef(InventarioCatalogo, {partial: true}),
         },
       },
     })
-    catalogo: Partial<Catalogo>,
-    @param.query.object('where', getWhereSchemaFor(Catalogo)) where?: Where<Catalogo>,
+    inventarioCatalogo: InventarioCatalogo,
+    @param.where(InventarioCatalogo) where?: Where<InventarioCatalogo>,
   ): Promise<Count> {
-    return this.inventarioRepository.inventarioCatalogo1(id).patch(catalogo, where);
+    return this.inventarioCatalogoRepository.updateAll(inventarioCatalogo, where);
   }
 
-  @del('/inventarios/{id}/catalogos', {
-    responses: {
-      '200': {
-        description: 'Inventario.Catalogo DELETE success count',
-        content: {'application/json': {schema: CountSchema}},
+  @get('/inventario-catalogos/{id}')
+  @response(200, {
+    description: 'InventarioCatalogo model instance',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(InventarioCatalogo, {includeRelations: true}),
       },
     },
   })
-  async delete(
+  async findById(
     @param.path.string('id') id: string,
-    @param.query.object('where', getWhereSchemaFor(Catalogo)) where?: Where<Catalogo>,
-  ): Promise<Count> {
-    return this.inventarioRepository.inventarioCatalogo1(id).delete(where);
+    @param.filter(InventarioCatalogo, {exclude: 'where'}) filter?: FilterExcludingWhere<InventarioCatalogo>
+  ): Promise<InventarioCatalogo> {
+    return this.inventarioCatalogoRepository.findById(id, filter);
+  }
+
+  @patch('/inventario-catalogos/{id}')
+  @response(204, {
+    description: 'InventarioCatalogo PATCH success',
+  })
+  async updateById(
+    @param.path.string('id') id: string,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(InventarioCatalogo, {partial: true}),
+        },
+      },
+    })
+    inventarioCatalogo: InventarioCatalogo,
+  ): Promise<void> {
+    await this.inventarioCatalogoRepository.updateById(id, inventarioCatalogo);
+  }
+
+  @put('/inventario-catalogos/{id}')
+  @response(204, {
+    description: 'InventarioCatalogo PUT success',
+  })
+  async replaceById(
+    @param.path.string('id') id: string,
+    @requestBody() inventarioCatalogo: InventarioCatalogo,
+  ): Promise<void> {
+    await this.inventarioCatalogoRepository.replaceById(id, inventarioCatalogo);
+  }
+
+  @del('/inventario-catalogos/{id}')
+  @response(204, {
+    description: 'InventarioCatalogo DELETE success',
+  })
+  async deleteById(@param.path.string('id') id: string): Promise<void> {
+    await this.inventarioCatalogoRepository.deleteById(id);
   }
 }

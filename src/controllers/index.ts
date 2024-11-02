@@ -30,3 +30,4 @@ export * from './catalogo.controller';
 export * from './producto.controller';
 export * from './pedido.controller';
 export * from './proveedor.controller';
+export * from './producto-pedido.controller';
