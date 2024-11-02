@@ -20,6 +20,12 @@ export class Producto extends Entity {
     required: true,
   })
   descripcion: string;
+  
+  @property({
+    type: 'number',
+    required: true,
+  })
+  precio: number;
 
 
   constructor(data?: Partial<Producto>) {

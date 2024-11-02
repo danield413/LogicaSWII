@@ -9,6 +9,12 @@ export class Catalogo extends Entity {
   })
   _id?: string;
 
+  @property({
+    type: 'number',
+    required: true,
+  })
+  descuento: number;
+
 
   constructor(data?: Partial<Catalogo>) {
     super(data);
