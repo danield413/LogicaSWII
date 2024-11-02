@@ -13,3 +13,7 @@ export * from './producto-catalogo.controller';
 export * from './catalogo-producto.controller';
 export * from './pedido-proveedor.controller';
 export * from './proveedor-pedido.controller';
+export * from './inventario-catalogo.controller';
+export * from './catalogo-inventario.controller';
+export * from './inventario-catalogo-sub-venta.controller';
+export * from './sub-venta-inventario-catalogo.controller';
