@@ -179,7 +179,7 @@ export class AdministradorController {
       },
     })
     credentials: {correo: string; clave: string},
-  ): Promise<{token?: string; success: boolean}> {
+  ): Promise<{token: string; success: boolean, correo: string}> {
     const {correo, clave} = credentials;
 
     // Buscar administrador por correo y clave
@@ -202,6 +202,6 @@ export class AdministradorController {
     // Aquí se generaría un token JWT o algún identificador de sesión
     const token = await this.authService.generateToken({id: admin._id, correo: admin.correo});
 
-    return {token, success: true};
+    return {token, success: true, correo: admin.correo};
   }
 }

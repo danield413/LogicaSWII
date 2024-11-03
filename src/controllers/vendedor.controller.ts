@@ -176,7 +176,7 @@ export class VendedorController {
       },
     })
     credentials: {correo: string; clave: string},
-  ): Promise<{token?: string; success: boolean}> {
+  ): Promise<{token?: string; success: boolean, correo: string}> {
     const {correo, clave} = credentials;
 
     const vendedor = await this.vendedorRepository.findOne({
@@ -195,6 +195,6 @@ export class VendedorController {
 
     const token = await this.authService.generateToken({id: vendedor._id, correo: vendedor.correo});
 
-    return {token, success: true};
+    return {token, success: true, correo: vendedor.correo};
   }
 }
