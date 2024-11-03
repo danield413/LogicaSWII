@@ -13,14 +13,10 @@ export class SucursalRepository extends DefaultCrudRepository<
 
   public readonly sucursalVenta: HasManyRepositoryFactory<Venta, typeof Sucursal.prototype._id>;
 
-  public readonly sucursalInventario: HasOneRepositoryFactory<Inventario, typeof Sucursal.prototype._id>;
-
   constructor(
-    @inject('datasources.sistema') dataSource: SistemaDataSource, @repository.getter('VentaRepository') protected ventaRepositoryGetter: Getter<VentaRepository>, @repository.getter('InventarioRepository') protected inventarioRepositoryGetter: Getter<InventarioRepository>,
+    @inject('datasources.sistema') dataSource: SistemaDataSource, @repository.getter('VentaRepository') protected ventaRepositoryGetter: Getter<VentaRepository>,
   ) {
     super(Sucursal, dataSource);
-    this.sucursalInventario = this.createHasOneRepositoryFactoryFor('sucursalInventario', inventarioRepositoryGetter);
-    this.registerInclusionResolver('sucursalInventario', this.sucursalInventario.inclusionResolver);
     this.sucursalVenta = this.createHasManyRepositoryFactoryFor('sucursalVenta', ventaRepositoryGetter,);
     this.registerInclusionResolver('sucursalVenta', this.sucursalVenta.inclusionResolver);
   }
