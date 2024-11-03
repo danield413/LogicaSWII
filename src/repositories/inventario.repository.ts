@@ -18,10 +18,14 @@ export class InventarioRepository extends DefaultCrudRepository<
           typeof Inventario.prototype._id
         >;
 
+  public readonly inventarioSucursal: BelongsToAccessor<Sucursal, typeof Inventario.prototype._id>;
+
   constructor(
     @inject('datasources.sistema') dataSource: SistemaDataSource, @repository.getter('SucursalRepository') protected sucursalRepositoryGetter: Getter<SucursalRepository>, @repository.getter('InventarioCatalogoRepository') protected inventarioCatalogoRepositoryGetter: Getter<InventarioCatalogoRepository>, @repository.getter('CatalogoRepository') protected catalogoRepositoryGetter: Getter<CatalogoRepository>,
   ) {
     super(Inventario, dataSource);
+    this.inventarioSucursal = this.createBelongsToAccessorFor('inventarioSucursal', sucursalRepositoryGetter,);
+    this.registerInclusionResolver('inventarioSucursal', this.inventarioSucursal.inclusionResolver);
     this.inventarioCatalogo1 = this.createHasManyThroughRepositoryFactoryFor('inventarioCatalogo1', catalogoRepositoryGetter, inventarioCatalogoRepositoryGetter,);
     this.registerInclusionResolver('inventarioCatalogo1', this.inventarioCatalogo1.inclusionResolver);
   }

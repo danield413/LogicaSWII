@@ -24,3 +24,7 @@ export * from './catalogo.controller';
 export * from './pedido.controller';
 export * from './proveedor.controller';
 export * from './producto-pedido.controller';
+export * from './sucursal-inventario.controller';
+export * from './inventario-sucursal.controller';
+export * from './sucursal.controller';
+export * from './inventario.controller';
