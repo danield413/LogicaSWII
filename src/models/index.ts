@@ -6,7 +6,6 @@ export * from './sucursal.model';
 export * from './sub-venta.model';
 export * from './inventario.model';
 export * from './catalogo.model';
-export * from './producto.model';
 export * from './pedido.model';
 export * from './proveedor.model';
 export * from './inventario-catalogo.model';

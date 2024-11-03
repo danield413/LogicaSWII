@@ -1,5 +1,4 @@
 import {Entity, model, property, hasMany} from '@loopback/repository';
-import {Producto} from './producto.model';
 import {Inventario} from './inventario.model';
 import {InventarioCatalogo} from './inventario-catalogo.model';
 
@@ -18,8 +17,17 @@ export class Catalogo extends Entity {
   })
   descuento: number;
 
-  @hasMany(() => Producto)
-  catalogoProducto: Producto[];
+  @property({
+    type: 'string',
+    required: true,
+  })
+  nombre: string;
+
+  @property({
+    type: 'number',
+    required: true,
+  })
+  precio: number;
 
   @hasMany(() => Inventario, {through: {model: () => InventarioCatalogo}})
   inventarioCatalogo2: Inventario[];

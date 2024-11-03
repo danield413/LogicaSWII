@@ -5,7 +5,6 @@ export * from './inventario-catalogo.repository';
 export * from './inventario.repository';
 export * from './pedido.repository';
 export * from './producto-pedido.repository';
-export * from './producto.repository';
 export * from './proveedor.repository';
 export * from './sub-venta.repository';
 export * from './sucursal.repository';
