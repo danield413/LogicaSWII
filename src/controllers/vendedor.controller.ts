@@ -16,14 +16,18 @@ import {
   del,
   requestBody,
   response,
+  HttpErrors,
 } from '@loopback/rest';
 import {Vendedor} from '../models';
 import {VendedorRepository} from '../repositories';
+import {AuthService} from '../services';
+import {service} from '@loopback/core';
 
 export class VendedorController {
   constructor(
     @repository(VendedorRepository)
-    public vendedorRepository : VendedorRepository,
+    public vendedorRepository: VendedorRepository,
+    @service(AuthService) public authService: AuthService,
   ) {}
 
   @post('/vendedors')
@@ -44,6 +48,8 @@ export class VendedorController {
     })
     vendedor: Omit<Vendedor, '_id'>,
   ): Promise<Vendedor> {
+    const clave = vendedor.clave;
+    vendedor.clave = await this.authService.encryptPassword(clave);
     return this.vendedorRepository.create(vendedor);
   }
 
@@ -146,5 +152,49 @@ export class VendedorController {
   })
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.vendedorRepository.deleteById(id);
+  }
+
+  // Nuevo endpoint para login de vendedor
+  @post('/vendedors/login')
+  @response(200, {
+    description: 'Login response',
+    content: {'application/json': {schema: {type: 'object', properties: {token: {type: 'string'}, success: {type: 'boolean'}}}}},
+  })
+  async login(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              correo: {type: 'string'},
+              clave: {type: 'string'},
+            },
+            required: ['correo', 'clave'],
+          },
+        },
+      },
+    })
+    credentials: {correo: string; clave: string},
+  ): Promise<{token?: string; success: boolean}> {
+    const {correo, clave} = credentials;
+
+    const vendedor = await this.vendedorRepository.findOne({
+      where: {correo},
+    });
+
+    if (!vendedor) {
+      throw new HttpErrors.Unauthorized('Credenciales incorrectas');
+    }
+
+    const claveMatch = await this.authService.comparePassword(clave, vendedor.clave);
+
+    if (!claveMatch) {
+      throw new HttpErrors.Unauthorized('Credenciales incorrectas');
+    }
+
+    const token = await this.authService.generateToken({id: vendedor._id, correo: vendedor.correo});
+
+    return {token, success: true};
   }
 }
