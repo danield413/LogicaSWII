@@ -1,3 +1,4 @@
+import {service} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -7,24 +8,29 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
 import {SubVenta} from '../models';
 import {SubVentaRepository} from '../repositories';
+import {VentasService} from '../services';
 
 export class SubVentaController {
   constructor(
     @repository(SubVentaRepository)
-    public subVentaRepository : SubVentaRepository,
-  ) {}
+    public subVentaRepository: SubVentaRepository,
+
+    @service(VentasService)
+    public ventasService: VentasService,
+
+  ) { }
 
   @post('/sub-ventas')
   @response(200, {
@@ -44,6 +50,8 @@ export class SubVentaController {
     })
     subVenta: Omit<SubVenta, '_id'>,
   ): Promise<SubVenta> {
+    //Llamado al servicio de ventas para reducir el stock
+    await this.ventasService.reducirStock(subVenta.inventarioCatalogoId, subVenta.cantidad);
     return this.subVentaRepository.create(subVenta);
   }
 
