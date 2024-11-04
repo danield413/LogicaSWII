@@ -84,6 +84,21 @@ export class SubVentaController {
     return this.subVentaRepository.find(filter);
   }
 
+
+  //End point para obetner el producto mas vendido y el menos vendido
+  @get('/sub-ventas/productos-mas-y-menos-vendidos')
+  @response(200, {
+    description: 'SubVenta model count',
+    content: {'application/json': {schema: CountSchema}},
+  })
+  async productosMasYMenosVendidos(
+    @param.where(SubVenta) where?: Where<SubVenta>,
+  ): Promise<any> {
+
+    return this.ventasService.obtenerProductoMasYMenosVendido();
+
+  }
+
   @patch('/sub-ventas')
   @response(200, {
     description: 'SubVenta PATCH success count',

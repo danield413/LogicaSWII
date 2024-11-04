@@ -1,9 +1,7 @@
-import {injectable, /* inject, */ BindingScope} from '@loopback/core';
-import {Catalogo, InventarioCatalogo} from '../models';
-import {CatalogoRepository, InventarioCatalogoRepository} from '../repositories';
+import { /* inject, */ BindingScope, injectable} from '@loopback/core';
 import {repository} from '@loopback/repository';
 import {HttpErrors} from '@loopback/rest';
-import {model} from '@loopback/repository';
+import {InventarioCatalogoRepository, SubVentaRepository} from '../repositories';
 
 
 
@@ -11,8 +9,12 @@ import {model} from '@loopback/repository';
 export class VentasService {
   constructor(
     @repository(InventarioCatalogoRepository)
-    public inventarioCatalogoRepository: InventarioCatalogoRepository
-  ) {}
+    public inventarioCatalogoRepository: InventarioCatalogoRepository,
+
+    @repository(SubVentaRepository)
+    public subVentaRepository: SubVentaRepository,
+
+  ) { }
 
   /*
    * Add service methods here
@@ -43,4 +45,31 @@ export class VentasService {
     });
   }
 
+  async obtenerProductoMasYMenosVendido(): Promise<any> {
+    // Consulta para el producto más vendido
+    const [productoMasVendido] = await this.subVentaRepository.dataSource
+      .connector?.collection('SubVenta')
+      .aggregate([
+        {$group: {_id: '$inventarioCatalogoId', total: {$sum: '$cantidad'}}},
+        {$match: {total: {$gt: 0}}},  // Solo productos con ventas > 0
+        {$sort: {total: -1}},
+        {$limit: 1},
+      ])
+      .toArray();
+
+    // Consulta para el producto menos vendido
+    const [productoMenosVendido] = await this.subVentaRepository.dataSource
+      .connector?.collection('SubVenta')
+      .aggregate([
+        {$group: {_id: '$inventarioCatalogoId', total: {$sum: '$cantidad'}}},
+        {$match: {total: {$gt: 0}}},  // Solo productos con ventas > 0
+        {$sort: {total: 1}},
+        {$limit: 1},
+      ])
+      .toArray();
+
+    return {productoMasVendido, productoMenosVendido};
+  }
 }
+
+
