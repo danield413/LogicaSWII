@@ -7,13 +7,13 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
@@ -23,8 +23,8 @@ import {ClienteRepository} from '../repositories';
 export class ClienteController {
   constructor(
     @repository(ClienteRepository)
-    public clienteRepository : ClienteRepository,
-  ) {}
+    public clienteRepository: ClienteRepository,
+  ) { }
 
   @post('/clientes')
   @response(200, {
@@ -109,6 +109,25 @@ export class ClienteController {
     @param.filter(Cliente, {exclude: 'where'}) filter?: FilterExcludingWhere<Cliente>
   ): Promise<Cliente> {
     return this.clienteRepository.findById(id, filter);
+  }
+
+
+  //End point para clientes por cedula
+
+  @get('/clientes/cedula/{cedula}')
+  @response(200, {
+    description: 'Cliente model instance',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(Cliente, {includeRelations: true}),
+      },
+    },
+  })
+  async findByCedula(
+    @param.path.string('cedula') cedula: string,
+    @param.filter(Cliente, {exclude: 'where'}) filter?: FilterExcludingWhere<Cliente>
+  ): Promise<Cliente | null> {
+    return this.clienteRepository.findOne({where: {cedula: cedula}});
   }
 
   @patch('/clientes/{id}')

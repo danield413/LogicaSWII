@@ -7,24 +7,28 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
-import {Inventario} from '../models';
+import {Inventario, Sucursal} from '../models';
 import {InventarioRepository} from '../repositories';
+import {SucursalRepository} from '../repositories/sucursal.repository';
+
 
 export class InventarioController {
   constructor(
     @repository(InventarioRepository)
-    public inventarioRepository : InventarioRepository,
-  ) {}
+    public inventarioRepository: InventarioRepository,
+    @repository(InventarioRepository)
+    public sucursalRepository: SucursalRepository,
+  ) { }
 
   @post('/inventarios')
   @response(200, {

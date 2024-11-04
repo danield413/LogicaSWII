@@ -7,24 +7,28 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
-import {Sucursal} from '../models';
-import {SucursalRepository} from '../repositories';
+import {Inventario, Sucursal} from '../models';
+import {InventarioRepository, SucursalRepository} from '../repositories';
 
 export class SucursalController {
   constructor(
     @repository(SucursalRepository)
-    public sucursalRepository : SucursalRepository,
-  ) {}
+    public sucursalRepository: SucursalRepository,
+
+    @repository(InventarioRepository)
+    public inventarioRepository: InventarioRepository,
+
+  ) { }
 
   @post('/sucursals')
   @response(200, {
@@ -109,6 +113,30 @@ export class SucursalController {
     @param.filter(Sucursal, {exclude: 'where'}) filter?: FilterExcludingWhere<Sucursal>
   ): Promise<Sucursal> {
     return this.sucursalRepository.findById(id, filter);
+  }
+
+
+  //End point en el que se pasa el id de una sucursal y me retorna el inventario que tiene cada sucursal
+
+
+  @get('/sucursals/{id}/inventarios1', {
+    responses: {
+      '200': {
+        description: 'Array of Inventario belonging to Sucursal',
+        content: {
+          'application/json': {
+            schema: {type: 'array', items: getModelSchemaRef(Inventario)},
+          },
+        },
+      },
+    },
+  })
+  async findInventarios(
+    @param.path.string('id') id: typeof Sucursal.prototype._id,
+    @param.query.object('filter') filter?: Filter<Inventario>,
+  ): Promise<Inventario[]> {
+    //Retornar el inventario de una sucursal
+    return this.sucursalRepository.sucursalInventario(id).find(filter);
   }
 
   @patch('/sucursals/{id}')

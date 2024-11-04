@@ -10,6 +10,7 @@ export class SucursalRepository extends DefaultCrudRepository<
   typeof Sucursal.prototype._id,
   SucursalRelations
 > {
+  
 
   public readonly sucursalVenta: HasManyRepositoryFactory<Venta, typeof Sucursal.prototype._id>;
 
@@ -25,3 +26,5 @@ export class SucursalRepository extends DefaultCrudRepository<
     this.registerInclusionResolver('sucursalVenta', this.sucursalVenta.inclusionResolver);
   }
 }
+
+
