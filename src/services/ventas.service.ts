@@ -58,6 +58,8 @@ export class VentasService {
     });
   }
 
+  //TODO: Implementar el método para obtener el producto más y menos vendido pero global, no para cada inventario
+
   async obtenerProductoMasYMenosVendido(): Promise<any> {
     // Consulta para el producto más vendido
     const [productoMasVendido] = await this.subVentaRepository.dataSource
@@ -94,7 +96,7 @@ export class VentasService {
 
     // Verificar si el inventario existe
     if (!inventario) {
-      throw new Error(`No se encontró el producto con ID: ${inventarioCatalogoId}`);
+      throw new Error(`No se encontró el producto en el inventario con ID: ${inventarioCatalogoId}`);
     }
 
     // Buscar el producto
@@ -148,7 +150,7 @@ export class VentasService {
 
         // Verificar si el prosducto existe
         if (!productoEnInventario) {
-          throw new Error(`No se encontró el producto con con ID: ${subVenta.inventarioCatalogoId}`);
+          throw new Error(`No se encontró el producto en el inventario con con ID: ${subVenta.inventarioCatalogoId}`);
         }
 
         const producto = await this.catalogoRepository.findOne({
