@@ -181,7 +181,7 @@ export class VentasService {
 
     // Verificar si el cliente existe
     if (!cliente) {
-      throw new Error(`No se encontró la venta con ID: ${ventaId}`);
+      throw new Error(`No se encontró el cliente con el ID: ${venta.clienteId}`);
     }
 
     const nombreCliente = `${cliente.nombre} ${cliente.apellido}`;
@@ -193,7 +193,7 @@ export class VentasService {
 
     // Verificar si el vendedor existe
     if (!vendedor) {
-      throw new Error(`No se encontró la venta con ID: ${ventaId}`);
+      throw new Error(`No se encontró el vendedor con el ID: ${venta.vendedorId}`);
     }
 
     const nombreVendedor = `${vendedor.nombre} ${vendedor.apellido}`;
@@ -205,7 +205,7 @@ export class VentasService {
 
     // Verificar si la sucursal existe
     if (!sucursal) {
-      throw new Error(`No se encontró la venta con ID: ${ventaId}`);
+      throw new Error(`No se encontró la sucursal con el id: ${venta.sucursalId}`);
     }
 
     const nombreSucursal = sucursal.nombre;
