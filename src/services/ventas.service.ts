@@ -148,7 +148,7 @@ export class VentasService {
 
         // Verificar si el prosducto existe
         if (!productoEnInventario) {
-          throw new Error(`No se encontró la venta con ID: ${ventaId}`);
+          throw new Error(`No se encontró el producto con con ID: ${subVenta.inventarioCatalogoId}`);
         }
 
         const producto = await this.catalogoRepository.findOne({
