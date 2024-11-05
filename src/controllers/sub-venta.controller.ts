@@ -50,6 +50,8 @@ export class SubVentaController {
     })
     subVenta: Omit<SubVenta, '_id'>,
   ): Promise<SubVenta> {
+    //Calcular el subtotal
+    subVenta.subTotal = await this.ventasService.calcularSubTotal(subVenta.inventarioCatalogoId, subVenta.cantidad);
     //Llamado al servicio de ventas para reducir el stock
     await this.ventasService.reducirStock(subVenta.inventarioCatalogoId, subVenta.cantidad);
     return this.subVentaRepository.create(subVenta);
@@ -98,6 +100,22 @@ export class SubVentaController {
     return this.ventasService.obtenerProductoMasYMenosVendido();
 
   }
+
+  //End point para obtener todas las subventas de una venta y el total
+
+  @get('/sub-ventas/factura/{ventaId}')
+  @response(200, {
+    description: 'SubVenta model count',
+    content: {'application/json': {schema: CountSchema}},
+  })
+  async obtenerSubVentasDeUnaVenta(
+    @param.path.string('ventaId') ventaId: string,
+  ): Promise<any> {
+
+    return this.ventasService.obtenerFactura(ventaId);
+
+  }
+
 
   @patch('/sub-ventas')
   @response(200, {
@@ -169,5 +187,14 @@ export class SubVentaController {
   })
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.subVentaRepository.deleteById(id);
+  }
+
+  //End point para borrar todas las subventas de una venta
+  @del('/sub-ventas/venta/{ventaId}')
+  @response(204, {
+    description: 'SubVenta DELETE success',
+  })
+  async deleteSubVentasDeUnaVenta(@param.path.string('ventaId') ventaId: string): Promise<void> {
+    await this.subVentaRepository.deleteAll({ventaId: ventaId});
   }
 }

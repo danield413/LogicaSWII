@@ -17,8 +17,8 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {Inventario, Sucursal} from '../models';
-import {InventarioRepository, SucursalRepository} from '../repositories';
+import {Inventario, Sucursal, Venta} from '../models';
+import {InventarioRepository, SucursalRepository, VentaRepository} from '../repositories';
 
 export class SucursalController {
   constructor(
@@ -27,6 +27,10 @@ export class SucursalController {
 
     @repository(InventarioRepository)
     public inventarioRepository: InventarioRepository,
+
+
+    @repository(VentaRepository)
+    public ventaRepository: VentaRepository,
 
   ) { }
 
@@ -137,6 +141,27 @@ export class SucursalController {
   ): Promise<Inventario[]> {
     //Retornar el inventario de una sucursal
     return this.sucursalRepository.sucursalInventario(id).find(filter);
+  }
+
+
+  //End point para obtener las ventas de una sucursal
+  @get('/sucursals/{id}/ventas1')
+  @response(200, {
+    description: 'Array of Venta model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(Venta, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async findVentas(
+    @param.path.string('id') id: typeof Sucursal.prototype._id,
+    @param.query.object('filter') filter?: Filter<Venta>,
+  ): Promise<Venta[]> {
+    return this.sucursalRepository.sucursalVenta(id).find(filter);
   }
 
   @patch('/sucursals/{id}')
