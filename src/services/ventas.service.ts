@@ -58,6 +58,8 @@ export class VentasService {
     });
   }
 
+  //TODO: Implementar el método para obtener el producto más y menos vendido pero global, no para cada inventario
+
   async obtenerProductoMasYMenosVendido(): Promise<any> {
     // Consulta para el producto más vendido
     const [productoMasVendido] = await this.subVentaRepository.dataSource
@@ -94,7 +96,7 @@ export class VentasService {
 
     // Verificar si el inventario existe
     if (!inventario) {
-      throw new Error(`No se encontró el producto con ID: ${inventarioCatalogoId}`);
+      throw new Error(`No se encontró el producto en el inventario con ID: ${inventarioCatalogoId}`);
     }
 
     // Buscar el producto
@@ -148,7 +150,7 @@ export class VentasService {
 
         // Verificar si el prosducto existe
         if (!productoEnInventario) {
-          throw new Error(`No se encontró la venta con ID: ${ventaId}`);
+          throw new Error(`No se encontró el producto en el inventario con con ID: ${subVenta.inventarioCatalogoId}`);
         }
 
         const producto = await this.catalogoRepository.findOne({
@@ -181,7 +183,7 @@ export class VentasService {
 
     // Verificar si el cliente existe
     if (!cliente) {
-      throw new Error(`No se encontró la venta con ID: ${ventaId}`);
+      throw new Error(`No se encontró el cliente con el ID: ${venta.clienteId}`);
     }
 
     const nombreCliente = `${cliente.nombre} ${cliente.apellido}`;
@@ -193,7 +195,7 @@ export class VentasService {
 
     // Verificar si el vendedor existe
     if (!vendedor) {
-      throw new Error(`No se encontró la venta con ID: ${ventaId}`);
+      throw new Error(`No se encontró el vendedor con el ID: ${venta.vendedorId}`);
     }
 
     const nombreVendedor = `${vendedor.nombre} ${vendedor.apellido}`;
@@ -205,7 +207,7 @@ export class VentasService {
 
     // Verificar si la sucursal existe
     if (!sucursal) {
-      throw new Error(`No se encontró la venta con ID: ${ventaId}`);
+      throw new Error(`No se encontró la sucursal con el id: ${venta.sucursalId}`);
     }
 
     const nombreSucursal = sucursal.nombre;
