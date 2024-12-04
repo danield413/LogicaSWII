@@ -15,15 +15,34 @@ describe("CatalogoController", () => {
   afterAll(async () => {
     await app.stop();
   });
-
   // Caso de prueba: Obtener productos
-  it("should return a list of products", async () => {
+  it("Debe retornar una lista de productps", async () => {
     const response = await client.get("/catalogos"); // Realiza una solicitud GET a /products
     expect(response.body).to.be.an.Object(); // Verifica que la ifica el contenido del primer producto
   });
 
-  it("should return a list of subventas", async () => {
+  it("Debe retornar una lista de subventas", async () => {
     const response = await client.get("/subventas"); // Realiza una solicitud GET a /products
     expect(response.body).to.be.an.Object(); // Verifica que la ifica el contenido del primer producto
   });
+
+  it("Debe retornar una lista de ventas", async () => {
+    const response = await client.get("/ventas"); // Realiza una solicitud GET a /products
+    expect(response.body).to.be.an.Object(); // Verifica que la ifica el contenido del primer producto
+  });
+
+  it("El valor de una venta debe ser mayor a 0", async () => {
+    const response = await client.post("/ventas").send({
+      fecha: new Date(),
+      tipoVenta: "En punto de venta",
+      totalPagado: 0,
+      vendedorId: "----------",
+      clienteId: "------------",
+      sucursalId: "----------"
+    });
+
+    expect(response.body.error.message).to.be.an.String();
+  });
+
+
 });

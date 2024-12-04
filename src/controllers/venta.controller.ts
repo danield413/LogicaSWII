@@ -16,6 +16,7 @@ import {
   del,
   requestBody,
   response,
+  HttpErrors,
 } from '@loopback/rest';
 import {Venta} from '../models';
 import {VentaRepository} from '../repositories';
@@ -44,6 +45,12 @@ export class VentaController {
     })
     venta: Omit<Venta, '_id'>,
   ): Promise<Venta> {
+    // Validar que el total sea mayor a 0
+    if (venta.totalPagado <= 0) {
+      throw new HttpErrors.BadRequest('El total pagado debe ser mayor a 0');
+    }
+
+    // Crear la venta en el repositorio
     return this.ventaRepository.create(venta);
   }
 
