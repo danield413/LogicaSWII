@@ -41,7 +41,9 @@ describe("Pruebas generales de la APP", () => {
       sucursalId: "----------"
     });
 
+
     expect(response.body.error.message).to.be.an.String();
+    expect(response.status).to.equal(404);
   });
 
 
