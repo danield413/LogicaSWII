@@ -2,7 +2,7 @@ import { Client, expect } from "@loopback/testlab";
 import { MsLogicaApplication } from "../../application"; // Asegúrate de que este sea el nombre correcto de tu aplicación
 import { setupApplication } from "../../utils/test-helper"; // Este helper se encarga de configurar la aplicación para las pruebas
 
-describe("CatalogoController", () => {
+describe("Pruebas generales de la APP", () => {
   let app: MsLogicaApplication;
   let client: Client;
 
